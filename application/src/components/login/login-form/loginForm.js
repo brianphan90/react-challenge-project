@@ -23,8 +23,7 @@ class LoginForm extends Component {
 
   // deprecated but fixes the timing/asynch issues for state updating
   UNSAFE_componentWillReceiveProps(nextProps) {
-    console.log(nextProps)
-    if( nextProps.isAuth ){
+    if(nextProps.isAuth ){
       this.props.onLogin();
     }
   }
@@ -33,7 +32,6 @@ class LoginForm extends Component {
   login(e) {
     e.preventDefault();
     this.props.commenceLogin(this.state.email, this.state.password)   
-    console.log(store.getState().auth.token)
     if(this.props.isAuth){
       this.props.onLogin();
     }
