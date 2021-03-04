@@ -7,6 +7,7 @@ export default (state = INITIAL_STATE, action) => {
         case LOGIN:
             return { ...state, email: action.payload.login, token: action.payload.token }
         case LOGOUT:
+            console.log('logging out')
             return { ...state, ...INITIAL_STATE }
         default:
             return state;

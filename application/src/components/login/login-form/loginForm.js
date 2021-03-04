@@ -1,12 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'; 
 import { loginUser } from '../../../redux/actions/authActions'
-
+import store  from '../../../redux/store'
 const mapActionsToProps = dispatch => ({
   commenceLogin(email, password) {
-    dispatch(loginUser(email, password))
+    dispatch(loginUser(email, password))  
+    return store.getState()
   }
 })
+const mapStateToProps = state => {
+  const { auth } = state
+  return {
+    isAuth : auth.token
+  }
+}
 
 class LoginForm extends Component {
   state = {
@@ -14,11 +21,25 @@ class LoginForm extends Component {
     password: "",
   }
 
+  // deprecated but fixes the timing/asynch issues for state updating
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    console.log(nextProps)
+    if( nextProps.isAuth ){
+      this.props.onLogin();
+    }
+  }
+
+
   login(e) {
     e.preventDefault();
-    this.props.commenceLogin(this.state.email, this.state.password);
-    this.props.onLogin();
+    this.props.commenceLogin(this.state.email, this.state.password)   
+    console.log(store.getState().auth.token)
+    if(this.props.isAuth){
+      this.props.onLogin();
+    }
+
   }
+
 
   onChange(key, val) {
     this.setState({ [key]: val });
@@ -43,4 +64,4 @@ class LoginForm extends Component {
   }
 }
 
-export default connect(null, mapActionsToProps)(LoginForm);
+export default connect(mapStateToProps, mapActionsToProps)(LoginForm);
