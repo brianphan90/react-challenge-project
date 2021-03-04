@@ -7,7 +7,7 @@ import './orderForm.css';
 const ADD_ORDER_URL = `${SERVER_IP}/api/add-order`
 
 const mapStateToProps = (state) => ({
-    auth: state.auth,
+    auth: state.auth
 })
 
 class OrderForm extends Component {
@@ -20,7 +20,7 @@ class OrderForm extends Component {
     }
 
     menuItemChosen(event) {
-        this.setState({ item: event.target.value });
+        this.setState({ order_item: event.target.value });
     }
 
     menuQuantityChosen(event) {
