@@ -1,6 +1,6 @@
 import { LOGIN, LOGOUT } from './types';
 import { SERVER_IP } from '../../private'
-import store from '../store'
+
 const finishLogin = (email, token) => {
     return {
         type: LOGIN,
@@ -26,7 +26,7 @@ export const loginUser = (email, password) => {
         .then(response => response.json())
         .then( (response) => {
             if (response.success) {
-                const pls =  dispatch(finishLogin(response.email, response.token));
+                dispatch(finishLogin(response.email, response.token));
             }
         })
     };
