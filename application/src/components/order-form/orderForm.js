@@ -5,20 +5,24 @@ import { SERVER_IP } from '../../private';
 import './orderForm.css';
 
 const ADD_ORDER_URL = `${SERVER_IP}/api/add-order`
-
+const EDIT_ORDER_URL = `${SERVER_IP}/api/edit-order`
 const mapStateToProps = (state) => ({
     auth: state.auth
 })
 
 class OrderForm extends Component {
-    constructor(props) {
+    constructor(props){
         super(props);
         this.state = {
             order_item: "",
-            quantity: "1"
+            quantity: "1",
+            orders: [],
+            orderId : props.match.params.id || "", //logically default to empty string 
+            dynamicTitle : props.match.params.id 
+                ? "Edit Your Order"
+                : "I'd like to order.."
         }
     }
-
     menuItemChosen(event) {
         this.setState({ order_item: event.target.value });
     }
@@ -27,12 +31,30 @@ class OrderForm extends Component {
         this.setState({ quantity: event.target.value });
     }
 
+    getAllOrders(id){
+        fetch(`${SERVER_IP}/api/current-orders`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then( () => {
+            const finalOrders = this.state.orders.find( order => order._id === this.state.orderId)
+            console.log(finalOrders)
+            this.setState({finalOrders})
+        })
+        .catch(error => (console.log(error)))
+    
+    }
+
     submitOrder(event) {
+        const FINAL_URL = (!!this.state.orderId )? EDIT_ORDER_URL : ADD_ORDER_URL
         event.preventDefault();
         if (this.state.order_item === "") return;
-        fetch(ADD_ORDER_URL, {
+        fetch(FINAL_URL, {
             method: 'POST',
             body: JSON.stringify({
+                id : this.state.id,
                 order_item: this.state.order_item,
                 quantity: this.state.quantity,
                 ordered_by: this.props.auth.email || 'Unknown!',
@@ -51,7 +73,7 @@ class OrderForm extends Component {
             <Template>
                 <div className="form-wrapper">
                     <form>
-                        <label className="form-label">I'd like to order...</label><br />
+                        <label className="form-label">{this.state.dynamicTitle}</label><br />
                         <select 
                             value={this.state.order_item} 
                             onChange={(event) => this.menuItemChosen(event)}
